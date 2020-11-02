@@ -31,8 +31,9 @@ class Screenshot(QWebEngineView):
 # s.capture('https://pypi.org/project/PyQt5/', 'webpage.png')
 # 'https://pypi.org/project/PyQt5/'
 # 'webpage.png'
-def screenThePage(pageUrl, savePath):
-    app = QApplication()
+def screenThePage(*args):
+    pageUrl, savePath, *moreArgs = args[1:]
+    app = QApplication([sys.argv[0],]) # need to avoid inappropriate usage
     s = Screenshot()
     s.app = app
     s.capture(pageUrl, savePath)
@@ -40,8 +41,9 @@ def screenThePage(pageUrl, savePath):
 
 
 if __name__ == '__main__':
+    print(f'test {__name__}')
     pageUrl = "https://www.avito.ru/saratov/kvartiry/1-k_kvartira_34_m_89_et._1989595079"
     savePath = 'imgs/webpage'
     ext = '.png'
+    screenThePage(*sys.argv)
 
-    screenThePage(pageUrl, savePath + ext)

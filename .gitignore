@@ -3,3 +3,4 @@ imgs/*
 *.png
 *.exe
 output/*
+__pycache__/*

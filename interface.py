@@ -1,5 +1,6 @@
 import sys
 import os
+import writeOnImage
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QLCDNumber, QSlider,
     QVBoxLayout, QApplication, QPushButton, QFileDialog, QAction)
@@ -32,16 +33,17 @@ class UI(QWidget):
 
 
         self.setLayout(vbox)
-        self.setGeometry(100, 100, 280, 180)
+        self.setFixedSize(280, 180)
+
         self.setWindowTitle('Добавить надпись')
         self.show()
 
     def showDialog(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
+        print("Выбрано")
         self.fname = fname
 
     def runProgram(self):
-        import writeOnImage
         writeOnImage.main(file=self.fname)
 
 

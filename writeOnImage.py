@@ -5,37 +5,56 @@ import webbrowser
 import pandas
 import os
 import sys
+import textwrap
+
 
 def writeOnImage(path, url, data, savepath):
     image = Image.open(path)
     headerImg = createHeaderImage(url, data, imgWidth=image.size[0])
-    multiImage = createNewImageFromMultiple(image.size[0], (image.size[1] + headerImg.size[1]), [headerImg, image] )
-
+    multiImage = concatImages([headerImg, image])
     multiImage.save(savepath)
     return savepath
 
 
+def createHeaderImage(url, data, imgWidth):
+    x = imgWidth
 
-def createNewImageFromMultiple(width, height, images):
-    multiImage = Image.new('RGB', (width, height))
+    # determine hight of header
+    padding = 100
+    print(imgWidth)
+    font = ImageFont.load_default().font
+    charwidth, charheight = font.getsize("1")
+    lines = textwrap.wrap(url, width=((imgWidth - 2*padding)//charwidth))
+    width, height = font.getsize(lines[0])
+
+
+    # header height = row height * (row number + 1 data row)
+    maxY = (height + padding) * (len(lines) + 1) + padding
+    print(maxY)
+    headerImg = Image.new('RGB', (x, maxY), color=(255, 255, 255))
+    draw = ImageDraw.Draw(headerImg)
+    y = padding
+    for line in lines:
+        draw.multiline_text((padding, y), line, fill=(0,0,0))
+        y += height + padding
+
+    draw.text((padding, y + height), data, fill=(0,0,0))
+    return headerImg
+
+
+def concatImages(images):
+    # concat one pic to another
+    # width is const
+    x = images[0].size[0]
+    y = 0
+    for img in images:
+        y += img.size[1]
+    multiImage = Image.new('RGB', (x, y))
     y_offset = 0
     for im in images:
         multiImage.paste(im, (0, y_offset))
         y_offset += im.size[1]
-
     return multiImage
-
-
-def createHeaderImage(url, data, imgWidth):
-    y = 60
-    x = imgWidth
-
-    headerImg = Image.new('RGB', (x, y))
-    draw = ImageDraw.Draw(headerImg)
-    draw.multiline_text((5, 5), url)
-    draw.text((5, 35), data)
-
-    return headerImg
 
 
 def testImageWriter():
@@ -64,7 +83,7 @@ def extractInfoFromFile(file):
 def addSavetagToSavepath(tag, path):
     dir = os.path.dirname(path)
     file = os.path.basename(path)
-    tagfile = os.path.join(dir, tag + file)
+    tagfile = os.path.join(dir, str(tag) + file)
     return tagfile
 
 
@@ -87,7 +106,6 @@ def main(file):
 
 
 if __name__ == '__main__':
-
     file = 'D:\\test.csv'
     file = sys.argv[1]
     main(file)

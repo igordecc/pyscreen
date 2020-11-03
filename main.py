@@ -12,7 +12,6 @@ def writeOnImage():
     path = "D:\\test.png"
     image = Image.open(path)
 
-
     url = "https://stackoverflow.com/questions/16373425/add-text-on-image-using-pil"
     data = "30.10.2020"
 

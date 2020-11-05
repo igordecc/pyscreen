@@ -3,4 +3,6 @@ imgs/*
 *.png
 *.exe
 output/*
-__pycache__/*
+*/__pycache__/*
+*.xlsx
+*.csv

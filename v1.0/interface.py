@@ -4,6 +4,7 @@ import writeOnImage
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QWidget, QLCDNumber, QSlider,
     QVBoxLayout, QApplication, QPushButton, QFileDialog, QAction)
+import traceback
 
 from PyQt5.QtGui import QIcon
 
@@ -26,7 +27,6 @@ class UI(QWidget):
         runb.setStatusTip('Запустить программу')
         runb.clicked.connect(self.runProgram)
 
-
         vbox = QVBoxLayout()
         vbox.addWidget(chooseb)
         vbox.addWidget(runb)
@@ -43,11 +43,26 @@ class UI(QWidget):
         print("Выбрано")
         self.fname = fname
 
+
     def runProgram(self):
         writeOnImage.main(file=self.fname)
+
+    def setUp(self):
+        self.no_exceptions = True
+
+        def testExcetionHook(type, value, tback):
+            self.no_exceptions = False
+            sys.__excepthook__(type, value, tback)
+
+        sys.excepthook = testExcetionHook
+
+    def tearDown(self):
+        assert self.no_exceptions
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = UI()
+    ex.setUp()
+    ex.tearDown()
     sys.exit(app.exec_())

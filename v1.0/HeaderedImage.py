@@ -16,20 +16,31 @@ class HeaderedImage:
 
     def coilTheText(self, text, width):
         # coil list
-        def coilText(text, width):
+
+        def coilText(text):
+            # hardcoded
             padding = 10
             font = ImageFont.load_default().font
-            char_w, char_h = font.getsize("1")
-            lines = textwrap.wrap(text, width=((width - 2 * padding) // char_w))
+            font_size = None
 
+            # not hardcoded
+            char_w, char_h = font.getsize("1")
+            find_number_of_chars = lambda w, p, c: (w - 2 * p) // c
+            number_of_chars = find_number_of_chars(width, padding, char_w)
+
+            # text wrap consume width in characters
+            # that means prog mast calculate width in number of characters beforehand
+            coiledText = textwrap.wrap(text, width=(number_of_chars))
+            return coiledText
 
         if isinstance(text, list):
             coiledText = []
             for tex in text:
-                lines = coilText(tex, width)
+                lines = coilText(tex)
                 coiledText.extend(lines)
+            return coiledText
         else:
-            ...
+            return coilText(text)
 
 
     def createHeaderImage(self, url, time, img_w):

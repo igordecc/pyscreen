@@ -79,23 +79,23 @@ class HeaderedImage:
         lines = self.coilTheText(text, img_w, self.fontd)
 
         calcHeaderH = lambda h, p, l: (h + p)*l + p   # header height = row height * row number
-        header_H = calcHeaderH(char_h, padding, len(lines))
+        header_h = calcHeaderH(char_h, padding, len(lines))
 
-
-        def linesOnImage(header_w, header_h):
-            headerImg = Image.new('RGB', (header_w, header_H), color=(255, 255, 255))
-            draw = ImageDraw.Draw(headerImg)
-
-            # Place text on new image
-            y = padding
-            for line in lines:
-                draw.multiline_text((padding, y), line, fill=(0, 0, 0))
-                y += char_h + padding
-
-            return headerImg
-
+        headerImg = self.linesOnImage(img_w, header_h, lines, char_h, padding)
         return headerImg
 
+    def linesOnImage(self, header_w, header_h, lines, char_h, padding):
+        headerImg = Image.new('RGB', (header_w, header_h), color=(255, 255, 255))
+        draw = ImageDraw.Draw(headerImg)
+
+        # Place text on new image
+        y = padding
+        for line in lines:
+            draw.multiline_text((padding, y), line, fill=(0, 0, 0))
+            y += char_h + padding
+
+        return headerImg
+    
     def concatImagesVertically(self, images):
         # concat one pic to another
         # width is const
